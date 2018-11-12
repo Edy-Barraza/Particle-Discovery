@@ -1,13 +1,13 @@
 # Particle-Discovery
 
-Everything you need to start categorizing subatomic particles! 
+Everything you need to start categorizing subatomic particles! Here we have a step-by-step guide on how to go from a dataset to trained neural network with performance benchmarks.
 
 This repository contains:
 <ol type="I">
     <b>
     <li> Dataset Organizer </li>
     <li> Data Normalization </li>
-    <li> Neural Network Trainer </li>
+    <li> Neural Network Trainer & Analysis </li>
     </b>
 </ol>
 
@@ -57,12 +57,12 @@ Args:
 ```
 compute_normalization.py will print out the means and the standard deviations, 
 
-<h3>III. Neural Network Trainer </h3>
+<h3>III. Neural Network Trainer & Analysis</h3>
 
-Now that we have the means and std devs, we can pass them on to train.py, where we will train a Densely Connected 161 layer Neural Network using the ADAM optimizer. To do so, we run the following command:
+Now that we have the means and std devs, we can pass them on to train.py, where we will train a Densely Connected 161 layer Neural Network using the ADAM optimizer, report the training behavior of the neural net, a ROC Curve, and a Confusion Matrix. To do so, we run the following command:
 
 ```
-python train.py --PATH_data /path/to/organized/dataset/ --PATH_save_images /path/to/convenient/folder/ --means 0.002886 0.015588 0.016239 --stdevs 0.052924 0.123025 0.125617 --fc_features 19872
+python train.py --PATH_data /path/to/organized/dataset/ --PATH_save_images /path/to/save/analysis/report/ --means 0.002886 0.015588 0.016239 --stdevs 0.052924 0.123025 0.125617 --fc_features 19872
 ```
 
 train.py run configurations 
