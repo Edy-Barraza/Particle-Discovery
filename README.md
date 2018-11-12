@@ -65,22 +65,23 @@ python train.py --PATH_data /path/to/organized/dataset/ --PATH_save_images /path
 train.py run configurations 
 ```
 Args:
-        bs (int) - batch size
-        epcohs_last_layer (int) - # of epochs to train only the fully connected layer of net
-        epochs (int) - # of epochs to train whole neural network
-        shape (int) - height in pixels for resizing square image
-        lr (float) - learning late for ADAM optimizer
-        betas ( 2 floats) - betas for ADAM optimizer
-        weight_decay (float) - weight decay
-        eps (float) - epsilon term added learning rate denominator for numerical stability
-        dropout (float) - drop out rate for dropout layers of network
+        bs (int, default:32) - batch size 
+        epcohs_last_layer (int, default:2) - # of epochs to train only the fully connected layer of net
+        epochs (int, default:10) - # of epochs to train whole neural network
+        shape (int) - optional, height in pixels for resizing square image
+        lr (float, default:1e-4) - learning late for ADAM optimizer
+        betas (2 floats, default: .9 .999) - betas for ADAM optimizer
+        weight_decay (float, default: 0) - weight decay for updating weights
+        eps (float, default:1e-8) - epsilon term added learning rate denominator for numerical stability
+        dropout (float, default:0) - drop out rate for dropout layers of network
         means (3 floats) - mean pixel values for R,G, & B color channels
         stdevs (3 floats) - std dev pixel values for R,G, & B color channels
-        pretrained (flag) - designates if we should start with Imagenet pretrained weights before training
-        save_model (flag) - designates if we should save the model
-        PATH_model_save (str) - path for saving model
+        fc_features (int) - number of features extracted from image by network that's fed to fully connected layer. Use 2208 for 224x224 images, Use 317952 for 600x600 images
+        pretrained (flag) - optional, designates if we should start with Imagenet pretrained weights before training
+        PATH_model_save (str) - optional, designates folder to save model if you wish to save your model after training it
         PATH_data (str) - path for accessing data folder
         PATH_save_images (str) - path to save images of our analysis     
 ```
-
+NOTE: <br>
+A crucial but tricky parameter to set is 
 RuntimeError: size mismatch, m1: [4 x 19872], m2: [2208 x 3] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
