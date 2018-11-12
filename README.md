@@ -2,7 +2,6 @@
 
 Everything you need to start categorizing subatomic particles! 
 
-<br>
 This repository contains:
 <ol type="I">
     <b>
@@ -12,8 +11,7 @@ This repository contains:
     </b>
 </ol>
 
-<img width="986" alt="screen shot 2018-11-12 at 3 40 05 am" src="https://user-images.githubusercontent.com/29441448/48335899-141a8800-e62d-11e8-80e5-f6af69adc821.png">
-
+<img width="986" alt="screen shot 2018-11-12 at 3 40 05 am" src="https://user-images.githubusercontent.com/29441448/48336172-b0448f00-e62d-11e8-97e5-01c9f75a81ec.png">
 
 <h3> I. Dataset Organizer </h3>
 
