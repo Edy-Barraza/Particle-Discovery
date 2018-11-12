@@ -1,6 +1,7 @@
 # Particle-Discovery
 
 Everything you need to start categorizing subatomic particles! 
+
 <br>
 This repository contains:
 <ol type="I">
@@ -10,6 +11,10 @@ This repository contains:
     <li> Neural Network Trainer </li>
     </b>
 </ol>
+
+<img width="986" alt="screen shot 2018-11-12 at 3 40 05 am" src="https://user-images.githubusercontent.com/29441448/48335899-141a8800-e62d-11e8-80e5-f6af69adc821.png">
+
+
 <h3> I. Dataset Organizer </h3>
 
 First, we will organize a dataset into training, validation, and testing set (skip if your data is already split as such). We take a dataset with a file structure as follows:
@@ -83,5 +88,9 @@ Args:
         PATH_save_images (str) - path to save images of our analysis     
 ```
 NOTE: <br>
-A crucial but tricky parameter to set is 
+A crucial but tricky parameter to set is fc_features. It's possible to compute manually, but it's quite difficult with such a large Neural Network. Instead, we can run train.py with fc_features set to some arbitrary integer > 0 and discover the right value in an error. Suppose my setting is --fc_features 2208. This will lead to an error like this:
+```
 RuntimeError: size mismatch, m1: [4 x 19872], m2: [2208 x 3] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
+```
+Which communicates to us that the correct setting is 19872.
+
