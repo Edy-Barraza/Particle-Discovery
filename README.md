@@ -57,7 +57,7 @@ Args:
 ```
 compute_normalization.py will print out the means and the standard deviations, 
 
-<h3> Neural Network Trainer </h3>
+<h3>III. Neural Network Trainer </h3>
 
 Now that we have the means and std devs, we can pass them on to train.py, where we will train a Densely Connected 161 layer Neural Network using the ADAM optimizer. To do so, we run the following command:
 
@@ -85,7 +85,7 @@ Args:
         PATH_data (str) - path for accessing data folder
         PATH_save_images (str) - path to save images of our analysis     
 ```
-NOTE: <br>
+<b><u>NOTE:</u></b> <br>
 A crucial but tricky parameter to set is fc_features. It's possible to compute manually, but it's quite difficult with such a large Neural Network. Instead, we can run train.py with fc_features set to some arbitrary integer > 0 and discover the right value in an error. Suppose my setting is --fc_features 2208. This will lead to an error like this:
 ```
 RuntimeError: size mismatch, m1: [4 x 19872], m2: [2208 x 3] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
