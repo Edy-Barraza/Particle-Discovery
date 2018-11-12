@@ -15,17 +15,17 @@ import numpy as np
 def main():
     #people chosen parameters upon running file
     parser = argparse.ArgumentParser()
-    parser.add_argument('--PATH',type=str)
-    parser.add_argument('--shape',type=int)
-    parser.add_argument('--bs',type=int,default=1)
-    parser.add_argument('--max_samples',type=int,default=sys.maxsize)
+    parser.add_argument('--PATH',type=str,required=True, help="(str) path to folder with data organized into training, validation, testing")
+    parser.add_argument('--shape',type=int,required=True,help="(int) height in pixels for resizing square image")
+    parser.add_argument('--bs',type=int,default=1,help="(int, default:1) batch size for these computations")
+    parser.add_argument('--max_samples',type=int,default=sys.maxsize,help="(int, default:inf) max number of samples to consider when computing mean & stdev")
     args = parser.parse_args()
     """
     Args:
         PATH (str) - path to folder with data organized into training, validation, testing
         shape (int) - height in pixels for resizing square image
-        bs (int) - batch size for these computations
-        max_samples (int) - max number of samples to consider when computing mean & stdev
+        bs (int, default:1) - batch size for these computations
+        max_samples (int, default:inf) - max number of samples to consider when computing mean & stdev
 
     """
 

@@ -19,56 +19,63 @@ import analysis
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bs',type=int,default=32)
-    parser.add_argument('--epochs_last_layer',type=int,default=0)
-    parser.add_argument('--epochs',type=int,default=10)
-    parser.add_argument('--shape',type=int,default=224)
-    parser.add_argument('--lr',type=float,default=1e-4)
-    parser.add_argument('--betas',nargs=2,type=float)
-    parser.add_argument('--weight_decay',type=float,default=0.0)
-    parser.add_argument('--eps',type=float,default=1e-8)
-    parser.add_argument('--dropout',type=float,default=0)
-    parser.add_argument('--fc_features',type =int,default=2208)
-    parser.add_argument('--means',nargs=3,type=float)
-    parser.add_argument('--stdevs',nargs=3,type=float)
-    parser.add_argument('--pretrained',action="store_true")
-    parser.add_argument('--save_model', action="store_true")
-    parser.add_argument('--PATH_model_save',type=str)
-    parser.add_argument('--PATH_data',type=str)
-    parser.add_argument('--PATH_save_images',type=str)
+    parser.add_argument('--bs',type=int,default=32,help="(int, default:32) batch size")
+    parser.add_argument('--epochs_last_layer',type=int,default=2,help="(int, default:2) # of epochs to train only the fully connected layer of net")
+    parser.add_argument('--epochs',type=int,default=10,help="(int, default:10) # of epochs to train whole neural network")
+    parser.add_argument('--means',required=True, nargs=3,type=float,help="(3 floats) mean pixel values for R,G, & B color channels of ")
+    parser.add_argument('--stdevs',required=True,nargs=3,type=float,help="(3 floats) stdev pixel values for R,G, & B color channels")
+    parser.add_argument('--shape',type=int,help="(int) height in pixels for resizing square image")
+    parser.add_argument('--lr',type=float,default=1e-4,help="(float, default:1e-4) learning late for ADAM optimizer")
+    parser.add_argument('--betas',nargs=2,type=float,help="(2 floats, default: .9 .999) betas for ADAM optimizer ")
+    parser.add_argument('--weight_decay',type=float,default=0.0,help="(float, default: 0) weight decay for updating weights")
+    parser.add_argument('--eps',type=float,default=1e-8,help="(float, default:1e-8) epsilon term added to Adam learning rate update denominator for numerical stability")
+    parser.add_argument('--dropout',type=float,default=0,help="(float, default:0) drop out rate for dropout layers of network")
+    parser.add_argument('--fc_features',type =int,required=True,help="(int) number of features extracted from image by network that's fed to fully connected layer. Use 2208 for 224x224 images, Use 317952 for 600x600 images")
+    parser.add_argument('--pretrained',action="store_true", help="(flag) optional, designates if we should start with Imagenet pretrained weights before training")
+    parser.add_argument('--PATH_model_save',type=str,help="(string) optional, designates folder to save model if you wish to save your model after training it")
+    parser.add_argument('--PATH_data',type=str,required=True,help="(string) path for accessing data folder")
+    parser.add_argument('--PATH_save_images',type=str,required=True,help="(str) path to save images of our analysis")
 
     args = parser.parse_args()
 
+    #change shape so that if its not included, we just use the current image size
+    #change save_model so if we use option and
+
     """
     Args:
-        bs (int) - batch size
-        epcohs_last_layer (int) - # of epochs to train only the fully connected layer of net
-        epochs (int) - # of epochs to train whole neural network
-        shape (int) - height in pixels for resizing square image
-        lr (float) - learning late for ADAM optimizer
-        betas ( 2 floats) - betas for ADAM optimizer
-        weight_decay (float) - weight decay
-        eps (float) - epsilon term added learning rate denominator for numerical stability
-        dropout (float) - drop out rate for dropout layers of network
+        bs (int, default:32) - batch size
+        epcohs_last_layer (int, default:2) - # of epochs to train only the fully connected layer of net
+        epochs (int, default:10) - # of epochs to train whole neural network
+        shape (int) - optional, height in pixels for resizing square image
+        lr (float, default:1e-4) - learning late for ADAM optimizer
+        betas (2 floats, default: .9 .999) - betas for ADAM optimizer
+        weight_decay (float, default: 0) - weight decay for updating weights
+        eps (float, default:1e-8) - epsilon term added learning rate denominator for numerical stability
+        dropout (float, default:0) - drop out rate for dropout layers of network
         means (3 floats) - mean pixel values for R,G, & B color channels
         stdevs (3 floats) - std dev pixel values for R,G, & B color channels
-        pretrained (flag) - designates if we should start with pretrained weights before training
-        fc_features (int) - number of features extracted by network that's fed to fully connected layer
-        save_model (flag) - designates if we should save the model
-        PATH_model_save (str) - path for saving model
+        fc_features (int) - number of features extracted from image by network that's fed to fully connected layer. Use 2208 for 224x224 images, Use 317952 for 600x600 images
+        pretrained (flag) - optional, designates if we should start with Imagenet pretrained weights before training
+        PATH_model_save (str) - optional, designates folder to save model if you wish to save your model after training it
         PATH_data (str) - path for accessing data folder
         PATH_save_images (str) - path to save images of our analysis
     """
 
     #load & preprocess data
-    mean = args.means #[0.485, 0.456, 0.406]
-    std  = args.stdevs#[0.229, 0.224, 0.225]
+    mean = args.means
+    std  = args.stdevs
 
-    data_transformations = transforms.Compose([
-        transforms.Resize(args.shape),
-        transforms.ToTensor(),
-        transforms.Normalize(mean,std),
-    ])
+    if args.shape:
+        data_transformations = transforms.Compose([
+            transforms.Resize(args.shape),
+            transforms.ToTensor(),
+            transforms.Normalize(mean,std),
+        ])
+    if args.shape==None:
+        data_transformations = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean,std),
+        ])
     image_datasets = {x:datasets.ImageFolder(os.path.join(args.PATH_data,x),data_transformations)
                       for x in ['train','valid']}
     dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=args.bs, shuffle=True)
@@ -98,7 +105,10 @@ def main():
     mod = mod.to(device)
 
     #training characteristics
-    optimizer = optim.Adam(list(filter(lambda p: p.requires_grad, mod.parameters())) ,lr=args.lr, betas=tuple(args.betas), eps=args.eps, weight_decay=args.weight_decay, amsgrad=False)
+    betas= (.9, .999)
+    if args.betas:
+        betas = tuple(args.betas)
+    optimizer = optim.Adam(list(filter(lambda p: p.requires_grad, mod.parameters())) ,lr=args.lr, betas=betas, eps=args.eps, weight_decay=args.weight_decay, amsgrad=False)
     criterion = nn.CrossEntropyLoss()
 
     #training
@@ -106,12 +116,12 @@ def main():
         mod,loss_list_pre,acc_list_pre = train_model_final_layer(mod, dataloaders, criterion, optimizer, args.epochs_last_layer,dataset_sizes,device)
         for param in mod.parameters():
             param.requires_grad = True
-        optimizer = optim.Adam(list(filter(lambda p: p.requires_grad, mod.parameters())) ,lr=args.lr, betas=tuple(args.betas), eps=args.eps, weight_decay=args.weight_decay, amsgrad=False)
+        optimizer = optim.Adam(list(filter(lambda p: p.requires_grad, mod.parameters())) ,lr=args.lr, betas=betas, eps=args.eps, weight_decay=args.weight_decay, amsgrad=False)
 
     mod,pred_list,label_list, prob_list,loss_list,acc_list =train_model(mod, dataloaders, criterion, optimizer, args.epochs,dataset_sizes,device)
 
     #save model
-    if args.save_model:
+    if args.PATH_model_save:
         torch.save(mod.state_dict(),args.PATH_model_save)
     #analyze results
     if args.epochs_last_layer>0:

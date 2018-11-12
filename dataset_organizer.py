@@ -23,13 +23,13 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--PATH",type=str)
-    parser.add_argument("--train_percent",type=float)
-    parser.add_argument("--valid_percent",type=float)
-    parser.add_argument("--test_percent",type=float)
-    parser.add_argument("--balanced",action="store_true")
-    parser.add_argument("--delete_excess",action="store_true")
-    parser.add_argument("--categories",nargs="+",type=str)
+    parser.add_argument("--PATH",type=str,required=True,help="(str) path to folder with unorganized dataset")
+    parser.add_argument("--train_percent",type=float,required=True,help="(int) percentage of data to allocate to training set")
+    parser.add_argument("--valid_percent",type=float,required=True,help="(int) percentage of data to allocate to validation set")
+    parser.add_argument("--test_percent",type=float,required=True,help="(int) percentage of data to allocate to testing set")
+    parser.add_argument("--balanced",action="store_true",help="(flag) optional, whether to make dataset balanced with equal number of samples in each class")
+    parser.add_argument("--delete_excess",action="store_true",help="(flag) optional, whether to delete class folders after moving necessary files")
+    parser.add_argument("--categories",nargs="+",type=str,help="(n strings) optional, strings of folder names we will consider a class when organizig data")
 
     args = parser.parse_args()
 
@@ -39,9 +39,9 @@ def main():
         train_percent (int) - percentage of data to allocate to training set
         valid_percent (int) - percentage of data to allocate to validaiton set
         test_percent (int) - percentage of data to allocate to testing set
-        balanced (flag) - whether to make dataset balanced with equal number of samples in each class
-        delete_excess (flag) - whether to delete class folders after moving necessary files
-        categories (n strings) - strings of folder names we will consider a class when organizig data
+        balanced (flag) - optional, whether to make dataset balanced with equal number of samples in each class
+        delete_excess (flag) - optional, whether to delete class folders after moving necessary files
+        categories (n strings) - optional, strings of folder names we will consider a class when organizig data
     """
 
     categories = os.listdir(args.PATH)
@@ -65,7 +65,7 @@ def main():
         for class_ in classes:
             if class_ in categories:
                 partition_class(class_,class_,train_numb,valid_numb,test_numb,args.PATH)
-            else:
+            if "other" in categories and (class_ not in categories):
                 partition_class(class_,"other",train_numb/divisor,valid_numb/divisor,test_numb/divisor,args.PATH)
 
             print("Organized "+class_)
@@ -77,7 +77,7 @@ def main():
             train_numb,valid_numb,test_numb = split_numbs_help(total_files,args.train_percent,args.valid_percent,args.test_percent)
             if class_ in categories:
                 partition_class(class_,class_,train_numb,valid_numb,test_numb,args.PATH)
-            else:
+            if "other" in categories and (class_ not in categories):
                 partition_class(class_,"other",train_numb,valid_numb,test_numb,args.PATH)
 
             print("Organized "+class_)
