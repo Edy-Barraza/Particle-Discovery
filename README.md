@@ -90,5 +90,5 @@ A crucial but tricky parameter to set is fc_features. It's possible to compute m
 ```
 RuntimeError: size mismatch, m1: [4 x 19872], m2: [2208 x 3] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
 ```
-Which communicates to us that the correct setting is 19872.
+Which communicates to us that the correct setting is --fc_features 19872.
 
