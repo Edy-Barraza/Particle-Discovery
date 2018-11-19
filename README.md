@@ -59,10 +59,10 @@ compute_normalization.py will print out the means and the standard deviations,
 
 <h3>III. Neural Network Trainer & Analysis</h3>
 
-Now that we have the means and std devs, we can pass them on to train.py, where we will train a Densely Connected 161 layer Neural Network using the ADAM optimizer, report the training behavior of the neural net, a ROC Curve, and a Confusion Matrix. To do so, we run the following command:
+Now that we have the means and std devs, we can pass them on to train.py, where we will train a Densely Connected 161 layer Neural Network using the ADAM optimizer, report the training behavior of the neural net, a ROC Curve, and a Confusion Matrix. We can even distribute our computing amongst many GPU's! To do so, we run the following command:
 
 ```
-python train.py --PATH_data /path/to/organized/dataset/ --PATH_save_images /path/to/save/analysis/report/ --means 0.002886 0.015588 0.016239 --stdevs 0.052924 0.123025 0.125617 --fc_features 19872
+python train.py --PATH_data /path/to/organized/dataset/ --PATH_save_images /path/to/save/analysis/report/ --means 0.002886 0.015588 0.016239 --stdevs 0.052924 0.123025 0.125617 --fc_features 19872 --gpus 0 1 2
 ```
 
 train.py run configurations 
@@ -83,7 +83,8 @@ Args:
         pretrained (flag) - optional, designates if we should start with Imagenet pretrained weights before training
         PATH_model_save (str) - optional, designates folder to save model if you wish to save your model after training it
         PATH_data (str) - path for accessing data folder
-        PATH_save_images (str) - path to save images of our analysis     
+        PATH_save_images (str) - path to save images of our analysis  
+        gpus (n ints,default:0) - ID's of gpus, starting from 0 to 7
 ```
 <b><u>NOTE:</u></b> <br>
 A crucial but tricky parameter to set is fc_features. It's possible to compute manually, but it's quite difficult with such a large Neural Network. Instead, we can run train.py with fc_features set to some arbitrary integer > 0 and discover the right value in an error. Suppose my setting is --fc_features 2208. This will lead to an error like this:
