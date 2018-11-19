@@ -1,6 +1,6 @@
 # Particle-Discovery
 
-Everything you need to start categorizing subatomic particles! Here we have a step-by-step guide on how to go from a dataset to trained neural network with performance benchmarks.
+Everything you need to start categorizing subatomic particles! Here we have a step-by-step guide on how to go from a dataset to trained neural network with performance benchmarks. Even parallelization across multipe GPU's is supported! 
 
 This repository contains:
 <ol type="I">
