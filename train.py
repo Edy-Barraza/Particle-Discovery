@@ -35,8 +35,8 @@ def main():
     parser.add_argument('--PATH_model_save',type=str,help="(string) optional, designates folder to save model if you wish to save your model after training it")
     parser.add_argument('--PATH_data',type=str,required=True,help="(string) path for accessing data folder")
     parser.add_argument('--PATH_save_images',type=str,required=True,help="(str) path to save images of our analysis")
-    parser.add_argument('--gpus',type=int,nargs='+',default=0,help="(n ints,default:0) ID's of gpus, starting from 0 to 7")
-
+    parser.add_argument('--gpus',type=int,nargs='+',help="(n ints,default:0) ID's of gpus, starting from 0 to 7")
+    
     args = parser.parse_args()
 
     #change shape so that if its not included, we just use the current image size
@@ -63,7 +63,7 @@ def main():
         gpus (n ints,default:0) - ID's of gpus, starting from 0 to 7
     """
 
-    #load & preprocess data
+    """------------------------ Load & Preprocess Data -------------------------"""
     mean = args.means
     std  = args.stdevs
 
@@ -87,15 +87,8 @@ def main():
 
     class_names = image_datasets['train'].classes
 
-    #device for training net
-    numb_gpus = len(args.gpus)
-    device=torch.device("cuda:"+str(args.gpus[0]) if torch.cuda.is_available() else 'cpu')
 
-    #device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
-    print("Using following device for computation:")
-    print(device)
-
-    #prepare model
+    """--------------------------- Generate Model ------------------------------"""
     mod = torchvision.models.densenet161(pretrained=(args.pretrained ==True),drop_rate=args.dropout)
     if args.epochs_last_layer==0:
         for param in mod.parameters():
@@ -107,10 +100,24 @@ def main():
     and getting size mismatch error at fully conected layer
     """
     mod.classifier = nn.Linear(args.fc_features,len(class_names))
+
+    """-------------------------------- Device ---------------------------------"""
+
+    #device for training net
+    if args.gpus==None:
+        device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
+        numb_gpus=1
+    if args.gpus:
+        numb_gpus = len(args.gpus)
+        device=torch.device("cuda:"+str(args.gpus[0]) if torch.cuda.is_available() else 'cpu')
+
+    print("Using following device for computation:")
+    print(device)
     if numb_gpus>1:
         mod = nn.DataParallel(mod,device_ids=args.gpus)
     mod = mod.to(device)
 
+    """----------------------- Training Characteristics ------------------------"""
     #training characteristics
     betas= (.9, .999)
     if args.betas:
@@ -118,7 +125,8 @@ def main():
     optimizer = optim.Adam(list(filter(lambda p: p.requires_grad, mod.parameters())) ,lr=args.lr, betas=betas, eps=args.eps, weight_decay=args.weight_decay, amsgrad=False)
     criterion = nn.CrossEntropyLoss()
 
-    #training
+    """------------------------------- Training --------------------------------"""
+
     if args.epochs_last_layer>0:
         mod,loss_list_pre,acc_list_pre = train_model_final_layer(mod, dataloaders, criterion, optimizer, args.epochs_last_layer,dataset_sizes,device)
         for param in mod.parameters():
@@ -130,6 +138,8 @@ def main():
     #save model
     if args.PATH_model_save:
         torch.save(mod.state_dict(),args.PATH_model_save)
+
+    """--------------------------- Analyze Results -----------------------------"""
     #analyze results
     if args.epochs_last_layer>0:
         loss_list['train'] = loss_list_pre['train']+loss_list['train']
@@ -143,6 +153,8 @@ def main():
     analysis.plot_epochs(acc_list['valid'],"validation accuracy",args.PATH_save_images)
     analysis.plot_confusion_matrix(label_list, pred_list, class_names,args.PATH_save_images)
     analysis.plot_roc(label_list,prob_list,class_names,args.PATH_save_images)
+
+"""--------------------------- Helper Functions ----------------------------"""
 
 def train_model(model, dataloaders, criterion, optimizer, num_epochs,dataset_sizes,device):
 
@@ -324,5 +336,6 @@ def train_model_final_layer(model, dataloaders, criterion, optimizer, num_epochs
 
     return model,loss_list,acc_list
 
+"""--------------------------------- Execute -----------------------------------"""
 if __name__=='__main__':
     main()
