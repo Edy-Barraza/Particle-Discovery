@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--PATH_model_save',type=str,help="(string) optional, designates folder to save model if you wish to save your model after training it")
     parser.add_argument('--PATH_data',type=str,required=True,help="(string) path for accessing data folder")
     parser.add_argument('--PATH_save_images',type=str,required=True,help="(str) path to save images of our analysis")
+    parser.add_argument('--gpus',type=int,nargs='+',default=0,help="(n ints,default:0) ID's of gpus, starting from 0 to 7")
 
     args = parser.parse_args()
 
@@ -59,6 +60,7 @@ def main():
         PATH_model_save (str) - optional, designates folder to save model if you wish to save your model after training it
         PATH_data (str) - path for accessing data folder
         PATH_save_images (str) - path to save images of our analysis
+        gpus (n ints,default:0) - ID's of gpus, starting from 0 to 7
     """
 
     #load & preprocess data
@@ -86,7 +88,10 @@ def main():
     class_names = image_datasets['train'].classes
 
     #device for training net
-    device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
+    numb_gpus = len(args.gpus)
+    device=torch.device("cuda:"+str(args.gpus[0]) if torch.cuda.is_available() else 'cpu')
+
+    #device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
     print("Using following device for computation:")
     print(device)
 
@@ -102,6 +107,8 @@ def main():
     and getting size mismatch error at fully conected layer
     """
     mod.classifier = nn.Linear(args.fc_features,len(class_names))
+    if numb_gpus>1:
+        mod = nn.DataParallel(mod,device_ids=args.gpus)
     mod = mod.to(device)
 
     #training characteristics
