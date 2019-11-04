@@ -92,11 +92,10 @@ def main():
 
 split = ["train/","valid/","test/"]
 def create_folders(categories,PATH):
-    for folder in split[:2]:
+    for folder in split:
         sp.call("mkdir "+PATH+folder,shell=True)
         for category in categories:
             sp.call("mkdir "+PATH+folder+category+"/",shell=True)
-    sp.call("mkdir "+PATH+split[2],shell=True)
 
 def split_numbs_help(total, train_percent,valid_percent,test_percent):
     train_len = total*train_percent
@@ -120,7 +119,7 @@ def partition_class(class_,category,train_numb,valid_numb,test_numb,PATH):
             shutil.move(PATH+class_+"/"+f,PATH+'valid/'+category+"/"+f)
             valid_numb-=1
         elif test_numb>0:
-            shutil.move(PATH+class_+"/"+f,PATH+'test/'+f)
+            shutil.move(PATH+class_+"/"+f,PATH+'test/'+category+"/"+f)
             test_numb-=1
         else:
             break
