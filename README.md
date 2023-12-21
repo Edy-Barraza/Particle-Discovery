@@ -9,6 +9,7 @@ This repository contains:
     <li> Dataset Organizer </li>
     <li> Data Normalization </li>
     <li> Neural Network Trainer & Analysis </li>
+    <li> Results</li>
     </b>
 </ol>
 
@@ -111,5 +112,7 @@ RuntimeError: size mismatch, m1: [4 x 19872], m2: [2208 x 3] at /opt/conda/conda
 ```
 Which communicates to us that the correct setting is --fc_features 19872.
 
+<h3>Results</h3>
 
+You can appreciate some of the results from these experiments [here](https://github.com/Edy-Barraza/Particle-Discovery/blob/master/Neural_Network_Benchmark_Summary.md)
 
