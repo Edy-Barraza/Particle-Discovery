@@ -5,6 +5,7 @@ Everything you need to start categorizing subatomic particles! Here we have a st
 This repository contains:
 <ol type="I">
     <b>
+    <li> Dependencies </li>
     <li> Dataset Organizer </li>
     <li> Data Normalization </li>
     <li> Neural Network Trainer & Analysis </li>
@@ -13,7 +14,24 @@ This repository contains:
 
 <img width="986" alt="screen shot 2018-11-12 at 3 40 05 am" src="https://user-images.githubusercontent.com/29441448/48336172-b0448f00-e62d-11e8-97e5-01c9f75a81ec.png">
 
-<h3> I. Dataset Organizer </h3>
+<h3> I. Dependencies</h3> 
+
+First install anaconda. You can follow the [anaconda guide](https://docs.anaconda.com/free/anaconda/install/index.html)
+
+
+Second clone the repository
+
+```
+git clone https://github.com/Edy-Barraza/Particle-Discovery.git
+```
+
+Finally create the environment with 
+
+```
+conda env create -f environment.yaml
+```
+
+<h3> II. Dataset Organizer </h3>
 
 First, we will organize a dataset into training, validation, and testing set (skip if your data is already split as such). We take a dataset with a file structure as follows:
 ```
@@ -40,7 +58,7 @@ Args:
         categories (n strings) - optional, strings of folder names we will consider as a class when organizig data. If not included, every folder name will be considered a class we organize. If included, folders named will be considered a class we organize; folders not named will be put into "other" if "other" is named, or just ignored  
 ```
 
-<h3> II. Data Normalization </h3>
+<h3> III. Data Normalization </h3>
 
 After organizing the data set, we need to know the mean and standard deviations for the RGB color channels of our dataset. 
 We can use compute_normalization.py for this task! compute_normalization.py will print the means and stdevs for us in the terminal. For example, we could run the following command in the shell:
@@ -57,7 +75,7 @@ Args:
 ```
 compute_normalization.py will print out the means and the standard deviations, 
 
-<h3>III. Neural Network Trainer & Analysis</h3>
+<h3>IV. Neural Network Trainer & Analysis</h3>
 
 Now that we have the means and std devs, we can pass them on to train.py, where we will train a Densely Connected 161 layer Neural Network using the ADAM optimizer, report the training behavior of the neural net, a ROC Curve, and a Confusion Matrix. We can even distribute our computing amongst many GPU's! To do so, we run the following command:
 
@@ -92,4 +110,6 @@ A crucial but tricky parameter to set is fc_features. It's possible to compute m
 RuntimeError: size mismatch, m1: [4 x 19872], m2: [2208 x 3] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
 ```
 Which communicates to us that the correct setting is --fc_features 19872.
+
+
 
