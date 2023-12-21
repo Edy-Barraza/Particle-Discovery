@@ -17,7 +17,7 @@ This repository contains:
 
 <h3> I. Dependencies</h3> 
 
-First install anaconda. You can follow the [anaconda guide](https://docs.anaconda.com/free/anaconda/install/index.html)
+First install anaconda for python 3.7; You can follow the [anaconda guide](https://docs.anaconda.com/free/anaconda/install/index.html)
 
 
 Second clone the repository
